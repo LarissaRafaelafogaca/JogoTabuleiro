@@ -25,54 +25,54 @@ public class JogoDaVelhaComDado {
         frame.setLayout(new BorderLayout());
 
         random = new Random();
-        jogadorAtual = 'X';  // Começa com o jogador X
+        jogadorAtual = 'X';  
         posicaoJogador = 0;
         jogoAtivo = true;
 
         JPanel menuPanel = new JPanel();
         menuPanel.setLayout(new GridLayout(4, 1));
-        menuPanel.setBackground(new Color(70, 130, 180)); // Cor do painel (azul médio)
+        menuPanel.setBackground(new Color(70, 130, 180)); 
 
         iniciarJogo = new JButton("1 - Iniciar Nova Partida");
         rolarDado = new JButton("2 - Executar Jogada");
         informarPosicoes = new JButton("3 - Informar Posições");
         JButton sair = new JButton("0 - Sair");
         resultadoDado = new JLabel("Role o dado para começar", SwingConstants.CENTER);
-        resultadoDado.setForeground(new Color(0, 0, 128)); // Cor do texto (azul escuro)
+        resultadoDado.setForeground(new Color(0, 0, 128)); 
 
-        // Definindo a cor do texto dos botões como preto
+        
         configurarBotao(iniciarJogo);
         configurarBotao(rolarDado);
         configurarBotao(informarPosicoes);
         configurarBotao(sair);
 
-        // Ações para os botões
+        
         iniciarJogo.addActionListener(e -> iniciarNovaPartida());
         rolarDado.addActionListener(e -> rolarDado());
         informarPosicoes.addActionListener(e -> informarPosicoes());
         sair.addActionListener(e -> System.exit(0));
 
-        // Adicionando os botões ao painel do menu
+        
         menuPanel.add(iniciarJogo);
         menuPanel.add(rolarDado);
         menuPanel.add(informarPosicoes);
         menuPanel.add(sair);
 
-        // Adicionando o painel de menu ao frame
+        
         frame.add(menuPanel, BorderLayout.NORTH);
         frame.add(resultadoDado, BorderLayout.CENTER);
 
-        // Painel do tabuleiro
+      
         JPanel tabuleiroPanel = new JPanel(new GridLayout(TAMANHO, TAMANHO));
-        tabuleiroPanel.setBackground(new Color(255, 255, 255)); // Cor de fundo do tabuleiro (branco)
+        tabuleiroPanel.setBackground(new Color(255, 255, 255)); 
         botoes = new JButton[TAMANHO][TAMANHO];
         for (int i = 0; i < TAMANHO; i++) {
             for (int j = 0; j < TAMANHO; j++) {
                 botoes[i][j] = new JButton("-");
                 botoes[i][j].setFont(new Font("Arial", Font.BOLD, 40));
-                botoes[i][j].setEnabled(false); // Desativa os botões inicialmente
-                botoes[i][j].setBackground(new Color(240, 248, 255)); // Cor de fundo dos botões do tabuleiro
-                botoes[i][j].setForeground(new Color(0, 0, 128)); // Cor do texto do botão (azul escuro)
+                botoes[i][j].setEnabled(false); 
+                botoes[i][j].setBackground(new Color(240, 248, 255)); 
+                botoes[i][j].setForeground(new Color(0, 0, 128)); 
                 tabuleiroPanel.add(botoes[i][j]);
             }
         }
@@ -85,31 +85,31 @@ public class JogoDaVelhaComDado {
     }
 
     private void configurarBotao(JButton botao) {
-        botao.setBackground(new Color(70, 130, 180)); // Cor de fundo dos botões
+        botao.setBackground(new Color(70, 130, 180)); 
         botao.setFont(new Font("Arial", Font.BOLD, 16));
-        botao.setForeground(Color.BLACK); // Cor do texto dos botões (preto)
-        botao.setFocusPainted(false); // Remove o foco visual
+        botao.setForeground(Color.BLACK); 
+        botao.setFocusPainted(false); 
 
-        // Adicionando efeito de hover
+      
         botao.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                botao.setBackground(new Color(100, 149, 237)); // Cor de hover
+                botao.setBackground(new Color(100, 149, 237)); 
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                botao.setBackground(new Color(70, 130, 180)); // Cor original
+                botao.setBackground(new Color(70, 130, 180)); 
             }
         });
     }
 
     private void iniciarNovaPartida() {
         posicaoJogador = 0;
-        jogadorAtual = 'X';  // Começa com o jogador X
+        jogadorAtual = 'X';  
         jogoAtivo = true;
         resultadoDado.setText("Nova partida iniciada! Role o dado.");
         for (int i = 0; i < TAMANHO; i++) {
             for (int j = 0; j < TAMANHO; j++) {
                 botoes[i][j].setText("-");
-                botoes[i][j].setEnabled(true); // Reativa os botões
+                botoes[i][j].setEnabled(true); 
             }
         }
     }
@@ -120,22 +120,22 @@ public class JogoDaVelhaComDado {
             return;
         }
 
-        int valorDado = random.nextInt(9) + 1; // Dado vai de 1 a 9 (correspondente às células do tabuleiro)
+        int valorDado = random.nextInt(9) + 1; 
         resultadoDado.setText("Dado: " + valorDado);
 
-        // Calcula a posição no tabuleiro (valorDado - 1 corresponde ao índice da célula)
+        
         int linha = (valorDado - 1) / TAMANHO;
         int coluna = (valorDado - 1) % TAMANHO;
 
-        // Se a célula já estiver ocupada, tenta novamente
+      
         if (botoes[linha][coluna].getText().equals("-")) {
             botoes[linha][coluna].setText(String.valueOf(jogadorAtual));
             if (verificarVitoria()) {
-                exibirMensagemVitoria(); // Exibe a mensagem de vitória
+                exibirMensagemVitoria(); 
                 jogoAtivo = false;
                 return;
             }
-            // Alterna o jogador
+           
             jogadorAtual = (jogadorAtual == 'X') ? 'O' : 'X';
         } else {
             resultadoDado.setText("Célula já ocupada! Role novamente.");
@@ -143,10 +143,10 @@ public class JogoDaVelhaComDado {
     }
 
     private void exibirMensagemVitoria() {
-        // Exibe uma mensagem de vitória
+        
         JOptionPane.showMessageDialog(frame, "Jogador " + jogadorAtual + " venceu!", "Vitória!", JOptionPane.INFORMATION_MESSAGE);
 
-        // Inicia o efeito de fogos de artifício
+        
         fireworksPanel.iniciarFogos();
     }
 
@@ -162,7 +162,7 @@ public class JogoDaVelhaComDado {
     }
 
     private boolean verificarVitoria() {
-        // Verifica linhas, colunas e diagonais para uma vitória
+        
         for (int i = 0; i < TAMANHO; i++) {
             if (botoes[i][0].getText().equals(String.valueOf(jogadorAtual)) &&
                 botoes[i][1].getText().equals(String.valueOf(jogadorAtual)) &&
@@ -191,7 +191,7 @@ public class JogoDaVelhaComDado {
         return false;
     }
 
-    // Painel para os fogos de artifício
+   
     class FireworksPanel extends JPanel {
         private Timer timer;
         private int ciclos;
@@ -209,7 +209,7 @@ public class JogoDaVelhaComDado {
                         ciclos++;
                         if (ciclos > 20) {
                             fogosAtivos = false;
-                            setBackground(Color.BLACK); // Resetando o fundo
+                            setBackground(Color.BLACK); 
                             ciclos = 0;
                         } else {
                             int r = random.nextInt(255);
@@ -233,7 +233,7 @@ public class JogoDaVelhaComDado {
             super.paintComponent(g);
 
             if (fogosAtivos) {
-                // Desenho de linhas para representar os fogos de artifício (explosões)
+                
                 int x = random.nextInt(getWidth());
                 int y = random.nextInt(getHeight());
                 for (int i = 0; i < 12; i++) {
@@ -248,6 +248,6 @@ public class JogoDaVelhaComDado {
     }
 
     public static void main(String[] args) {
-        new JogoDaVelhaComDado(); // Inicializa o jogo
+        new JogoDaVelhaComDado(); 
     }
 }
