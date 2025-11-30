@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borghi d’Oro - Casas a 1 Euro na Itália</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Georgia", serif;
+      }
+      body {
+        background: #f8f1e9;
+        color: #2f2f2f;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .navbar {
+        background: #2f2f2f;
+        color: #d4a373;
+        padding: 15px;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar .logo {
+        font-size: 28px;
+        font-weight: bold;
+        background: linear-gradient(45deg, #d4a373, #f1c40f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .navbar ul {
+        display: flex;
+        list-style: none;
+      }
+      .navbar li {
+        margin-left: 30px;
+      }
+      .navbar a {
+        color: #d4a373;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+      .navbar a:hover {
+        color: #f1c40f;
+      }
+      .page {
+        display: none;
+        margin-top: 80px;
+      }
+      .page.active {
+        display: block;
+      }
+      .banner {
+        background: url("https://images.unsplash.com/photo-1513584684374-8bab748fbf90")
+          center/cover no-repeat;
+        height: 420px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .banner::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 1;
+      }
+      .banner .container {
+        position: relative;
+        z-index: 2;
+      }
+      .banner h2 {
+        font-size: 48px;
+        color: #d4a373;
+        text-shadow: 2px 2px 12px #000;
+        margin-bottom: 15px;
+      }
+      .banner p {
+        font-size: 22px;
+        color: #fff;
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.5;
+      }
+      button {
+        background: linear-gradient(45deg, #8b1e3f, #a8324f);
+        color: #fff;
+        border: none;
+        padding: 13px 30px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-size: 16px;
+        margin: 8px 4px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s;
+      }
+      button:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(45deg, #a8324f, #c44569);
+      }
+      .properties h2 {
+        font-size: 36px;
+        text-align: center;
+        margin: 50px 0 30px;
+        color: #8b1e3f;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      /* ================ CARROSSEL INFINITO RÁPIDO E PERFEITO ================ */
+      .carousel {
+        overflow: hidden;
+        width: 100%;
+        padding: 20px 0;
+      }
+      .carousel-track {
+        display: flex;
+        gap: 30px;
+        width: fit-content;
+        animation: scroll 32s linear infinite; /* ← MAIS RÁPIDO (era 45s) */
+      }
+      .carousel-track:hover {
+        animation-play-state: paused;
+      }
+      .property-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        min-width: 340px;
+        flex-shrink: 0;
+        transition: transform 0.3s;
+      }
+      .property-card:hover {
+        transform: translateY(-10px);
+      }
+      .property-card img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+      }
+      .property-card .info {
+        padding: 22px;
+        text-align: center;
+      }
+      .property-card h3 {
+        font-size: 23px;
+        color: #8b1e3f;
+        margin-bottom: 8px;
+      }
+      .property-card .location {
+        color: #d4a373;
+        font-weight: bold;
+        font-size: 15px;
+        margin: 8px 0;
+      }
+      .property-card .price {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2f2f2f;
+        margin: 15px 0;
+      }
+      @keyframes scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      /* ============================================================= */
+
+      .form-container {
+        padding: 80px 20px 60px;
+        text-align: center;
+      }
+      .form-container h2 {
+        font-size: 36px;
+        color: #8b1e3f;
+        margin-bottom: 30px;
+      }
+      .form-container input,
+      .form-container select {
+        display: block;
+        width: 100%;
+        max-width: 440px;
+        margin: 14px auto;
+        padding: 14px;
+        border: 2px solid #d4a373;
+        border-radius: 6px;
+        font-size: 16px;
+      }
+      .message {
+        color: #8b1e3f;
+        margin: 20px 0;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .payment-options {
+        margin: 30px 0;
+      }
+      .payment-options label {
+        display: inline-block;
+        margin: 10px 15px;
+        cursor: pointer;
+      }
+      #payment-details {
+        margin-top: 30px;
+        padding: 25px;
+        background: #fff;
+        border: 2px solid #d4a373;
+        border-radius: 12px;
+        display: none;
+      }
+      #qrcode {
+        text-align: center;
+        background: #fff;
+        padding: 20px;
+        border: 2px dashed #d4a373;
+        border-radius: 12px;
+      }
+      #boleto-code {
+        font-family: monospace;
+        font-size: 20px;
+        background: #f1f1f1;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      footer {
+        text-align: center;
+        padding: 35px;
+        background: #2f2f2f;
+        color: #d4a373;
+        margin-top: 80px;
+      }
+      @media (max-width: 768px) {
+        .banner h2 {
+          font-size: 32px;
+        }
+        .banner p {
+          font-size: 18px;
+        }
+        .property-card {
+          min-width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <div class="logo">Borghi d’Oro</div>
+        <ul>
+          <li><a href="#" onclick="showPage('home')">Início</a></li>
+          <li><a href="#" onclick="showPage('register')">Cadastro</a></li>
+          <li><a href="#" onclick="showPage('login')">Login</a></li>
+          <li><a href="#" onclick="showPage('finalize')">Carrinho</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="page active">
+      <div class="banner">
+        <div class="container">
+          <h2>Casas a 1 Euro na Itália</h2>
+          <p>
+            More em um lindo vilarejo italiano histórico por apenas 1 euro +
+            reforma. Programa oficial de repovoamento da Itália!
+          </p>
+        </div>
+      </div>
+      <div class="properties container">
+        <h2>Imóveis Disponíveis nos Vilarejos Italianos</h2>
+        <div class="carousel">
+          <div class="carousel-track">
+            <!-- Cards duplicados para loop infinito -->
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1578662996442-48f60103fcbf"
+                alt="Sambuca"
+              />
+              <div class="info">
+                <h3>Casa de Pedra com Terraço</h3>
+                <p class="location">Sambuca di Sicilia – Sicília</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(1,'Casa em Sambuca di Sicilia',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6"
+                alt="Toscana"
+              />
+              <div class="info">
+                <h3>Casa com Vista para os Vinhedos</h3>
+                <p class="location">Monticiano – Toscana</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(2,'Casa em Monticiano',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+                alt="Tropea"
+              />
+              <div class="info">
+                <h3>Casa à Beira-Mar</h3>
+                <p class="location">Tropea – Calábria</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(3,'Casa em Tropea',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1505843513577-22bb7d21e455"
+                alt="Gangi"
+              />
+              <div class="info">
+                <h3>Casa com Vista para as Montanhas</h3>
+                <p class="location">Gangi – Sicília</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(4,'Casa em Gangi',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <!-- Repetição para loop infinito -->
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1578662996442-48f60103fcbf"
+                alt="Sambuca"
+              />
+              <div class="info">
+                <h3>Casa de Pedra com Terraço</h3>
+                <p class="location">Sambuca di Sicilia – Sicília</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(1,'Casa em Sambuca di Sicilia',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6"
+                alt="Toscana"
+              />
+              <div class="info">
+                <h3>Casa com Vista para os Vinhedos</h3>
+                <p class="location">Monticiano – Toscana</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(2,'Casa em Monticiano',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+                alt="Tropea"
+              />
+              <div class="info">
+                <h3>Casa à Beira-Mar</h3>
+                <p class="location">Tropea – Calábria</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(3,'Casa em Tropea',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+            <div class="property-card">
+              <img
+                src="https://images.unsplash.com/photo-1505843513577-22bb7d21e455"
+                alt="Gangi"
+              />
+              <div class="info">
+                <h3>Casa com Vista para as Montanhas</h3>
+                <p class="location">Gangi – Sicília</p>
+                <p class="price">€ 1,00</p>
+                <button onclick="addToCart(4,'Casa em Gangi',1)">
+                  Reservar Agora
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CADASTRO -->
+    <div id="register" class="page form-container">
+      <h2>Cadastro</h2>
+      <input type="text" id="reg-name" placeholder="Nome Completo" required />
+      <input type="email" id="reg-email" placeholder="E-mail" required />
+      <input type="password" id="reg-password" placeholder="Senha" required />
+      <input type="date" id="reg-dob" required />
+      <input type="tel" id="reg-phone" placeholder="Telefone" required />
+      <button onclick="register()">Cadastrar</button>
+      <p class="message" id="reg-message"></p>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login" class="page form-container">
+      <h2>Login</h2>
+      <input type="email" id="login-email" placeholder="E-mail" required />
+      <input type="password" id="login-password" placeholder="Senha" required />
+      <button onclick="login()">Entrar</button>
+      <p class="message" id="login-message"></p>
+    </div>
+
+    <!-- FINALIZAR COMPRA -->
+    <div id="finalize" class="page form-container">
+      <h2>Finalizar Reserva</h2>
+      <div
+        style="
+          background: #fff;
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 20px;
+        "
+      >
+        <ul id="bid-items" style="text-align: left; margin-bottom: 20px"></ul>
+        <h3 style="color: #8b1e3f">
+          Total: € <span id="bid-total">0.00</span>
+        </h3>
+      </div>
+
+      <div class="payment-options">
+        <h3>Forma de Pagamento</h3>
+        <label
+          ><input
+            type="radio"
+            name="payment"
+            value="pix"
+            onclick="showPayment('pix')"
+          />
+          Pix</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="payment"
+            value="boleto"
+            onclick="showPayment('boleto')"
+          />
+          Boleto</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="payment"
+            value="cartao"
+            onclick="showPayment('cartao')"
+          />
+          Cartão</label
+        >
+      </div>
+
+      <div id="payment-details"></div>
+
+      <p class="message" id="finalize-message"></p>
+    </div>
+
+    <footer>
+      &copy; 2025 Borghi d’Oro - Programa Oficial de Repovoamento Italiano
+    </footer>
+
+    <script>
+      let isLoggedIn = false;
+      let users = localStorage.getItem("users")
+        ? JSON.parse(localStorage.getItem("users"))
+        : {};
+      let cart = [];
+      let cartTotal = 0;
+
+      function showPage(id) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      function register() {
+        const email = document.getElementById("reg-email").value.trim();
+        const password = document.getElementById("reg-password").value;
+        const name = document.getElementById("reg-name").value;
+        if (!email || !password || !name)
+          return (document.getElementById("reg-message").textContent =
+            "Preencha todos os campos!");
+        if (users[email])
+          return (document.getElementById("reg-message").textContent =
+            "E-mail já cadastrado!");
+        users[email] = { password, name };
+        localStorage.setItem("users", JSON.stringify(users));
+        document.getElementById("reg-message").textContent =
+          "Cadastro realizado com sucesso! Faça login.";
+        showPage("login");
+      }
+
+      function login() {
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value;
+        if (users[email] && users[email].password === password) {
+          isLoggedIn = true;
+          document.getElementById("login-message").textContent =
+            "Login realizado com sucesso!";
+          showPage("home");
+        } else {
+          document.getElementById("login-message").textContent =
+            "E-mail ou senha incorretos!";
+        }
+      }
+
+      function addToCart(id, name, price) {
+        if (!isLoggedIn) {
+          showPage("login");
+          return;
+        }
+        if (cart.find((i) => i.id === id)) {
+          alert("Esta casa já está no carrinho!");
+          return;
+        }
+        cart.push({ id, name, price });
+        cartTotal += price;
+        updateCart();
+        alert("Casa adicionada ao carrinho com sucesso!");
+      }
+
+      function updateCart() {
+        const list = document.getElementById("bid-items");
+        list.innerHTML = "";
+        cart.forEach((i) => {
+          const li = document.createElement("li");
+          li.textContent = `${i.name} - € ${i.price.toFixed(2)}`;
+          list.appendChild(li);
+        });
+        document.getElementById("bid-total").textContent = cartTotal.toFixed(2);
+      }
+
+      function showPayment(method) {
+        const div = document.getElementById("payment-details");
+        div.style.display = "block";
+        if (method === "pix") {
+          div.innerHTML = `
+            <h3>Pagamento via Pix</h3>
+            <p>Valor: € ${cartTotal.toFixed(2)}</p>
+            <div id="qrcode">
+              <img src="https://i.ibb.co.com/0jD1Y7K/pix-qrcode-example.png" alt="QR Code Pix" width="220">
+              <p><strong>Chave Pix:</strong> contato@borghidoro.com</p>
+              <p>Escaneie com o app do seu banco</p>
+            </div>
+            <button onclick="finalizePurchase()">Pagar com Pix</button>
+          `;
+        } else if (method === "boleto") {
+          div.innerHTML = `
+            <h3>Pagamento via Boleto</h3>
+            <p>Valor: € ${cartTotal.toFixed(2)} (vencimento em 3 dias úteis)</p>
+            <div id="boleto-code">
+              34191.75008 01234.560008 01234.560008 1 928400000001.00
+            </div>
+            <p><strong>Linha digitável:</strong><br>34191.75008 01234.560008 01234.560008 1 928400000001.00</p>
+            <button onclick="finalizePurchase()">Imprimir Boleto</button>
+          `;
+        } else if (method === "cartao") {
+          div.innerHTML = `
+            <h3>Pagamento com Cartão</h3>
+            <input type="text" placeholder="Número do cartão" maxlength="19">
+            <input type="text" placeholder="Nome no cartão">
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <input type="text" placeholder="MM/AA" maxlength="5" style="width:100px;">
+              <input type="text" placeholder="CVV" maxlength="4" style="width:80px;">
+            </div>
+            <button style="margin-top:15px;" onclick="finalizePurchase()">Pagar com Cartão</button>
+          `;
+        }
+      }
+
+      function finalizePurchase() {
+        document.getElementById("finalize-message").innerHTML = `
+          <strong style="color:green;font-size:22px;">Reserva confirmada com sucesso!</strong><br><br>
+          Sua compra de € ${cartTotal.toFixed(
+            2
+          )} foi realizada com sucesso.<br><br>
+          Em até 48 horas você receberá um e-mail com os contatos oficiais do município italiano escolhido para assinatura do compromisso de reforma obrigatória e início do processo de aquisição da casa de 1 euro.
+        `;
+        cart = [];
+        cartTotal = 0;
+        updateCart();
+        document.getElementById("payment-details").style.display = "none";
+        setTimeout(() => showPage("home"), 10000);
+      }
+
+      // Persistência
+      window.addEventListener("beforeunload", () =>
+        localStorage.setItem("users", JSON.stringify(users))
+      );
+    </script>
+  </body>
+</html>
